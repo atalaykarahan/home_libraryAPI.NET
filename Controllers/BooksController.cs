@@ -34,12 +34,19 @@ namespace home_libraryAPI.Controllers
                 return NotFound();
             }
 
+            //return await _context.Books.ToListAsync();
+
             var bookDtos = _context.Books
                 .Select(book => new BookDto
                 {
                     Id = book.Id,
                     BookTitle = book.BookTitle,
+                    PublisherId = book.Publisher.Id,
                     PublisherName = book.Publisher.PublisherName,
+                    AuthorId = book.Author.Id,
+                    AuthorName = book.Author.AuthorName,
+                    ImagePath = book.ImagePath,
+                    BookSummary = book.BookSummary,
                     Categories = book.Categories.Select(category => new Categories
                     {
                         Id = category.Id,
@@ -48,19 +55,33 @@ namespace home_libraryAPI.Controllers
                 }).ToList();
 
             return Ok(bookDtos);
-
-
-
-
-
-
-            //if (_context.Books == null)
-            //{
-            //    return NotFound();
-            //}
-            //  return await _context.Books.ToListAsync();
+            if (_context.Books == null)
+            {
+                return NotFound();
+            }
+            return await _context.Books.ToListAsync();
 
         }
+
+        [HttpGet("GetHomePageChoose")]
+        public async Task<ActionResult<IEnumerable<Book>>> GetHomePageChoose()
+        {
+            if (_context.Books == null)
+            {
+                return NotFound();
+            }
+
+            var chooseDtos = _context.Books.Select(book => new ChooseDTO
+            {
+                Id = book.Id,
+                BookTitle = book.BookTitle,
+                ImagePath = book.ImagePath,
+                BookSummary = book.BookSummary
+            }).ToList();
+
+            return Ok(chooseDtos);
+        }
+
 
         // GET: api/Books/5
         [HttpGet("{id}")]

@@ -17,6 +17,8 @@ public partial class Book
 
     public string? ImagePath { get; set; }
 
+    public string? BookSummary { get; set; }
+
     public virtual Author Author { get; set; } = null!;
 
     public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
