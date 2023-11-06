@@ -82,6 +82,41 @@ namespace home_libraryAPI.Controllers
             return Ok(chooseDtos);
         }
 
+        [HttpGet("GetHomePageAbout")]
+        public async Task<ActionResult<Book>> GetHomePageAbout()
+        {
+            if (_context.Books == null)
+            {
+                return NotFound();
+            }
+            var books = _context.Books.Where(b => b.StatusId != 6).Select(b => b.Id).ToList();
+            if (books != null && books.Any())
+            {
+                var latestLog = _context.Logs
+                    .Where(log => log.EventTypeId == 25 && books.Contains((int)log.BookId)).OrderByDescending(log => log.EventDate)
+            .FirstOrDefault();
+
+                if (latestLog != null)
+                {
+                    var lastInsertBook = _context.Books.FirstOrDefault(b => b.Id == latestLog.BookId);
+
+                    if (lastInsertBook != null)
+                    {
+                        var bookDto = new ChooseDTO
+                        {
+                            Id = lastInsertBook.Id,
+                            BookTitle = lastInsertBook.BookTitle,
+                            ImagePath = lastInsertBook.ImagePath,
+                            BookSummary = lastInsertBook.BookSummary
+                        };
+
+                        return Ok(bookDto);
+                    }
+                }
+            }
+            return NotFound();
+        }
+
 
         // GET: api/Books/5
         [HttpGet("{id}")]
