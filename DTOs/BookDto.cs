@@ -10,7 +10,7 @@
         public string AuthorName { get; set; } = null!;
         public string? ImagePath { get; set; }
         public string? BookSummary { get; set; }
-        public virtual ICollection<Categories> Categories { get; set; } = new List<Categories>();
+        public virtual ICollection<Categories>? Categories { get; set; } = new List<Categories>();
 
     }
 

@@ -98,16 +98,25 @@ namespace home_libraryAPI.Controllers
 
                 if (latestLog != null)
                 {
-                    var lastInsertBook = _context.Books.FirstOrDefault(b => b.Id == latestLog.BookId);
+                    var lastInsertBook = await _context.Books.Include(b => b.Publisher).Include(b => b.Categories).Include(b => b.Author).FirstOrDefaultAsync(b => b.Id == latestLog.BookId);
 
                     if (lastInsertBook != null)
                     {
-                        var bookDto = new ChooseDTO
+                        var bookDto = new BookDto
                         {
                             Id = lastInsertBook.Id,
                             BookTitle = lastInsertBook.BookTitle,
                             ImagePath = lastInsertBook.ImagePath,
-                            BookSummary = lastInsertBook.BookSummary
+                            BookSummary = lastInsertBook.BookSummary,
+                            PublisherName = lastInsertBook.Publisher.PublisherName,
+                            Categories = lastInsertBook.Categories.Select(category => new Categories
+                            {
+                                Id = category.Id,
+                                CategoryName = category.CategoryName,
+                            }).ToList(),
+                            PublisherId = lastInsertBook.PublisherId,
+                            AuthorName = lastInsertBook.Author.AuthorName + " " + lastInsertBook.Author.AuthorSurname,
+                            AuthorId = lastInsertBook.AuthorId,
                         };
 
                         return Ok(bookDto);
