@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using home_libraryAPI.Models;
 using AutoMapper;
 using home_libraryAPI.DTOs;
+using System.Drawing;
+using System.Drawing.Imaging;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace home_libraryAPI.Controllers
 {
@@ -215,5 +213,44 @@ namespace home_libraryAPI.Controllers
         {
             return (_context.Books?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        [HttpGet("GetImage")]
+        public IActionResult GetImage([FromServices] IWebHostEnvironment hostingEnvironment, [FromQuery] string imageName)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(imageName))
+                {
+                    // Handle the case when imageName is not provided.
+                    return BadRequest();
+                }
+
+                string imagePath = Path.Combine(hostingEnvironment.ContentRootPath, "Content", "img", imageName);
+
+                if (!System.IO.File.Exists(imagePath))
+                {
+                    // Handle the case when the image file does not exist.
+                    return NotFound();
+                }
+
+                // Read the file into a byte array
+                byte[] fileBytes = System.IO.File.ReadAllBytes(imagePath);
+
+                // Return the image file directly from the byte array
+                return File(fileBytes, "image/jpeg");
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions if necessary
+                return StatusCode(500);
+            }
+        }
+
+
+
+
+
+
+
     }
 }
