@@ -1,6 +1,6 @@
 ﻿namespace home_libraryAPI.DTOs
 {
-    public class ChooseDTO
+    public class ChooseDto
     {
         public int Id { get; set; }
 
