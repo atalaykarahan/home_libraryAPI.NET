@@ -1,5 +1,9 @@
 using home_libraryAPI.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +24,23 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddDbContext<HomeLibraryContext>(options =>
 options.UseNpgsql(builder.Configuration.GetConnectionString("EFPostgre")));
+
+builder.Services.AddAuthentication(x =>
+{
+   x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x=>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("wubbalubbadubdub")),
+        ValidateAudience = false,
+        ValidateIssuer = false,
+    };
+});
 
 var app = builder.Build();
 

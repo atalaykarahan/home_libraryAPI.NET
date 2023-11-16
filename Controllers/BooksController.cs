@@ -53,12 +53,6 @@ namespace home_libraryAPI.Controllers
                 }).ToList();
 
             return Ok(bookDtos);
-            if (_context.Books == null)
-            {
-                return NotFound();
-            }
-            return await _context.Books.ToListAsync();
-
         }
 
         [HttpGet("GetHomePageChoose")]

@@ -11,7 +11,7 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; }
 
     public int AuthorityId { get; set; }
 
